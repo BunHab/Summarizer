@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
-
+    <title>Summarizor</title>
+    <link rel="icon" type="image/x-icon" href="https://i.pinimg.com/564x/d0/a0/42/d0a042a75036998a177df0614f11dc84.jpg">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
