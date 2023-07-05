@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Summarizor</title>
-    <link rel="icon" type="image/x-icon" href="https://i.pinimg.com/564x/d0/a0/42/d0a042a75036998a177df0614f11dc84.jpg">
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/1047/1047711.png">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
@@ -839,8 +839,8 @@
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
             <div class="flex justify-center">
-                <img src="https://i.pinimg.com/564x/d0/a0/42/d0a042a75036998a177df0614f11dc84.jpg"
-                    class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
+                <img src="https://cdn-icons-png.flaticon.com/512/1047/1047711.png"
+                    class="w-24 bg-gray-100 dark:bg-gray-900">
                 </img>
 
             </div>
@@ -850,7 +850,7 @@
                     Summarizer is a complimentary online tool that aids in condensing information and providing concise
                     summaries. It assists in distilling content by extracting the main ideas and key points, making it
                     easier to grasp the essence of a text.</p>
-                    <p
+                <p
                     class="text-center dark:text-white bg-center bg-gray-100 dark:bg-gray-900 selection:bg-[#268772] selection:text-white select-none">
                     (Apology for the loading speed)</p>
             </div>
@@ -862,9 +862,9 @@
                         <div class="w-[36rem] grid grid-row-2 md:grid-cols-1">
                             <div
                                 class="p-4 bg-[#268772] dark:bg-[#268772] rounded-tl-lg rounded-tr-lg text-center gap-4 text-white select-none">
-                                Raw Text
+                                Text
                             </div>
-                            <textarea
+                            <textarea placeholder="Please type here"
                                 class="bg-white p-6 dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-br-lg rounded-bl-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex transition-all duration-250 focus:outline focus:outline-2 focus:outline-blue-500 dark:text-white block w-full resize-none overflow-y-auto selection:bg-[#268772]"
                                 style="height: 491px" id="myTextarea" name="article"></textarea>
                             <p class="dark:text-white" id="wordCount"></p>
@@ -882,11 +882,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="flex justify-center">
+
+
+                        <span id="mytext"></span>
+
+
+                </div>
 
                 <div class="flex justify-center">
-                    <button
+
+                    <button id="button" onclick="displayText()"
                         class="rounded-full bg-[#268772] text-white text-lg py-1 px-8 flex motion-safe:hover:scale-[1.01]"
-                        style="margin-top: 0px; margin-left: -15px;" type="submit">Summarize</button>
+                        style="margin-top: 16px; margin-left: -15px;" type="submit" disabled>Summarize</button>
                 </div>
             </form>
 
@@ -912,6 +920,8 @@
                                 $('#mySummarizedTextarea').val(response);
 
                                 updateWordCount('#mySummarizedTextarea', '#summarizedWordCount');
+                                loadingText.textContent = '';
+
                             },
                             error: function(xhr, status, error) {
 
@@ -951,37 +961,92 @@
     </div>
 </body>
 <script>
-    // Get the textarea element
     const textarea = document.getElementById('myTextarea');
-    const textarea2 = document.getElementById('mySummarizedTextarea');
-    document.getElementById('mySummarizedTextarea').setAttribute('readonly', true);
 
     const wordCountElement = document.getElementById('wordCount');
 
+    const button = document.getElementById('button');
+    const loadingText = document.getElementById('mytext');
+
+    button.addEventListener('click', () => {
+        loadingText.textContent = "Loading...";
+
+        const text = textarea.value.trim();
+        const wordCount = text !== '' ? text.split(/\s+/).length : 0;
+        wordCountElement.textContent = 'Word Count: ' + wordCount;
+
+        // Disable the button if the word count is less than 15 or greater than 800
+        if (wordCount < 15) {
+            button.disabled = true;
+            wordCountElement.style.color = 'red';
+            wordCountElement.textContent = 'You need at least 15 words';
+            loadingText.textContent = "";
+        } else if (wordCount > 800) {
+            button.disabled = true;
+            wordCountElement.style.color = 'red';
+            wordCountElement.textContent = 'You need to be below 800 words';
+            loadingText.textContent = "";
+        } else {
+            button.disabled = false;
+            wordCountElement.style.color = 'green';
+        }
+    });
+
+
+
+    textarea.addEventListener('input', () => {
+        const text = textarea.value.trim();
+        const wordCount = text !== '' ? text.split(/\s+/).length : 0;
+        wordCountElement.textContent = 'Word Count: ' + wordCount;
+
+
+
+
+        // Disable the button if the word count is less than 15 or greater than 800
+        if (wordCount < 15) {
+            button.disabled = true;
+            wordCountElement.style.color = 'red';
+            wordCountElement.textContent = 'You need at least 15 words';
+        } else if (wordCount > 800) {
+            button.disabled = true;
+            wordCountElement.style.color = 'red';
+            wordCountElement.textContent = 'You need to be below 800 words';
+        } else {
+            button.disabled = false;
+            wordCountElement.style.color = 'green';
+
+        }
+    });
+
+    const textarea2 = document.getElementById('mySummarizedTextarea');
+    document.getElementById('mySummarizedTextarea').setAttribute('readonly', true);
     const summarizedWordCountElement = document.getElementById('summarizedWordCount');
+
 
 
     function updateWordCounts() {
 
-        const text = textarea.value;
         const text2 = textarea2.value;
 
-
-        const wordCount = text.trim() !== '' ? text.trim().split(/\s+/).length : 0;
         const wordCount2 = text2.trim() !== '' ? text2.trim().split(/\s+/).length : 0;
-
-
-        wordCountElement.textContent = 'Word Count: ' + wordCount;
 
         summarizedWordCountElement.textContent = 'Summarized Word Count: ' + wordCount2;
     }
 
 
-    textarea.addEventListener('input', updateWordCounts);
-    textarea2.addEventListener('input', updateWordCounts);
+    textarea2.addEventListener('input', updateWordCounts());
 
 
-    updateWordCounts();
+    // const text = textarea.value;
+    // const btn = document.getElementById("button");
+    // textarea.addEventListener('input', () => {
+
+    //     btn.disabled = textarea.value == '';
+    //     document.getElementById("mytext").innerHTML = "It's Loading..."
+    // });
+
 </script>
 
 </html>
+
+
